@@ -1,0 +1,131 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+   </head>
+   
+   
+   
+   <body style="direction: rtl;text-align: center;margin-bottom: 100px;">
+   <h1 style="color: #48a544">נוכחות עובדים</h1>
+   <!-- <img src="./7.jpg" style="width: 75%;"> -->
+
+<h4 style="margin-top: 50px;color:#0044be;">הוספת נוכחות לעובד</h4>
+תעודת זהות<label style="color: red;">*</label>
+<input class="form-control"  onfocusout="leave()" type="text" placeholder="תעודת זהות" id="t" />
+<label>תאריך</label>
+<label style="color: red;">*</label>
+<input class="form-control" onfocusout="leave()" type="date" id="date"/>
+<label>משעה</label>
+<label style="color: red;">*</label>
+<input class="form-control" onfocusout="leave()" type="time" id="start" />
+
+<label>עד שעה</label>
+<label style="color: red;">*</label>
+<input class="form-control" onfocusout="leave()" type="time" id="end"/>
+<p id="txt" style="color: red;"></p>
+<input  id="ibtn"  type="button" class="btn btn-default"  value="הוסף יום נוכחות" onclick="addday()"/>
+
+<br/>
+<div id="f" style="visibility:hidden">
+  <h4 style="color:#0044be;">עובד לא קיים אנא הוסף עובד למערכת</h4>
+  <label style="color: red;text-align: right;">*</label>
+  <input type="text" onfocusout="leave2()" class="form-control"   placeholder="תעודת זהות" id="tz"/>
+  <label style="color: red;text-align: right;">*</label>
+  <input type="text" onfocusout="leave2()" class="form-control"     placeholder="שם פרטי" id="fname"/>
+  <label style="color: red;">*</label>
+  <input type="text"  onfocusout="leave2()" class="form-control"     placeholder="שם משפחה" id="lname"/>
+  <input type="text" class="form-control"  placeholder="כתובת" id="address"/>
+  <input type="tel"  class="form-control"placeholder="טלפון " id="phone"/>
+
+  <input type="email"  class="form-control" placeholder="מייל" id="mail"/>
+  <input  id="bt" type="button" class="btn btn-default" value="הוסף" id="addemp" onclick="addEmp()"/>
+  </div>
+<h4 style="color:#0044be;">קבלת פרטי נוכחות עובד</h4>
+<input class="form-control"  onfocusout="leave3()" type="text" placeholder="insert tz" id="tt"  />
+<input  id="p" type="button" class="btn btn-default" onclick="getPre()" value="קבלת פרטי נוכחות עובד עפ תז"/>
+<div id="all"></div>
+</body>
+<script>
+    document.getElementById("ibtn").disabled = true;
+    document.getElementById("bt").disabled = true;
+    document.getElementById("p").disabled = true;
+function leave(){
+
+if($('#t').val().length==9&&$('#date').val()&&$('#start').val()&&$('#end').val()){
+  document.getElementById("ibtn").disabled = false;
+  document.getElementById("txt").innerText="";
+}
+else{
+  document.getElementById("txt").innerText="אחד או יותר מן הפרטים חסרים"
+}
+} 
+function leave2(){
+if($('#tz').val().length==9&&$('#fname').val()&&$('#lname').val()){
+  document.getElementById("bt").disabled = false;
+  
+}
+
+} 
+function leave3(){
+if($('#tt').val().length==9){
+  document.getElementById("p").disabled = false;
+  
+}
+
+} 
+// הוספת יום עבודה
+function addday(){
+var t=$('#t').val();
+var date=$('#date').val();
+var start=$('#start').val();
+var end=$('#end').val();
+    $.post("http://localhost:3000/presence/addDay",
+   {
+      tz:t,
+    date:date,
+    start:start,
+    end:end
+   },
+   function(data, status){
+   //  alert("Data: " + data + "\nStatus: " + status);
+     if(data=="false"){
+    document.getElementById("f").style.visibility = 'visible';
+//     elem.style.visibility = 'hidden'; // hide, but lets the element keep its size
+// elem.style.visibility = 'visible';
+     
+     }
+   });
+  }
+
+//  קבלת פרטי עובד
+function getPre(){
+  var t=$('#tt').val();
+$.get("http://localhost:3000/presence/getPresence/t="+t, function(data, status){
+  document.getElementById('all').innerHTML=JSON.stringify(data);
+  });
+}
+function addEmp(){
+  var tz=$('#tz').val();
+  var fname=$('#fname').val();
+  var lname=$('#lname').val();
+  var address=$('#address').val();
+  var phone=$('#phone').val();
+  var mail=$('#mail').val();
+  var isActive=true;
+   $.post("http://localhost:3000/employee/addemployee",
+   {
+      tz:tz,
+      fname:fname,
+      lname:lname,
+      address:address,
+      phone:phone,
+      mail:mail,
+      isActive:isActive
+   },
+   function(data, status){
+     alert("Data: " + data + "\nStatus: " + status);
+   });
+  }
+  </script>
+</html>

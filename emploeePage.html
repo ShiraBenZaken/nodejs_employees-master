@@ -1,0 +1,170 @@
+<html>
+<head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+    
+    <style>
+    #all {
+      background-color: rgb(255, 255, 255);
+      height: 110px;
+      overflow: auto;
+    }</style>
+   </head>
+
+<body style="direction: rtl;text-align: center;margin: 100px;margin-top: 10px;">
+
+
+<h1 style="color: #4b9c49;font-size: 50px; ;">עובדים</h1>
+  <!-- <img src="./8.jpg" style="width: 75%;"> -->
+<br/><br/>
+<div>
+<h4 style="color:#08378f;">הוספת עובד</h4>
+<label style="color: red;text-align: right;">*</label>
+<input type="text" onfocusout="leave2()" class="form-control"   placeholder="תעודת זהות" id="tz"/>
+<label style="color: red;text-align: right;">*</label>
+<input type="text" onfocusout="leave2()" class="form-control"     placeholder="שם פרטי" id="fname"/>
+<label style="color: red;">*</label>
+<input type="text"  onfocusout="leave2()" class="form-control"     placeholder="שם משפחה" id="lname"/>
+<input type="text" class="form-control"  placeholder="כתובת" id="address"/>
+<input type="tel"  class="form-control"placeholder="טלפון " id="phone"/>
+
+<input type="email"  class="form-control" placeholder="מייל" id="mail"/>
+<input  id="bt" type="button" class="btn btn-default" value="הוסף" id="addemp" onclick="addEmp()"/>
+<br/>
+<h4 style="color:#103272">קבלת פרטי כל העובדים</h4>
+
+
+<input type="button" class="btn btn-default" value="get all employees" onclick="getallEmployees()"/>
+<div id="all" style="font-size: 15px;"></div>
+<br/>
+
+
+<h4 style="color:#0044be">קבלת פרטי עובד</h4>
+<input type="button" id="bbb" class="btn btn-default" value="get by id" onclick="getOneEmp()"/>
+<input type="text" onfocusout="leave1()" class="form-control" placeholder="insert id" id="one" /><br/>
+
+
+
+<div id="o"></div>
+<h4 style="color:#0044be">מחיקת עובד</h4>
+<input type="button" id="ff" class="btn btn-default" class="btn btn-default" value="delete Employye by id" onclick="delEmp()"/>
+<input type="text" onfocusout="l3()" class="form-control" placeholder="insert id to delete employee" id="del" />
+<h4 style="color:#0044be">עדכון פרטי עובד</h4>
+
+<input type="text"  onfocusout="l4()" class="form-control" placeholder="insert id to update employee" id="up" />
+
+<br/>*
+<input type="text" onfocusout="l4()" class="form-control" placeholder="שם פרטי" id="fname1"/>*
+<input type="text" onfocusout="l4()" class="form-control" placeholder="שם משפחה" id="lname1"/>
+<input type="text"onfocusout="l4()" class="form-control" placeholder="כתובת" id="address1"/>
+<input type="tel" onfocusout="l4()" class="form-control" placeholder="טלפון " id="phone1"/>
+<input type="email" onfocusout="l4()" class="form-control" placeholder="מייל" id="mail1"/>
+<input type="button" id="dd" class="btn btn-default" value="עדכן" onclick="updateEmp()"/>
+</body>
+<script>
+
+
+
+
+
+document.getElementById("bbb").disabled = true;
+
+document.getElementById("bt").disabled = true;
+document.getElementById("ff").disabled = true;
+document.getElementById("dd").disabled = true;
+function leave1(){
+if($('#one').val().length==9){
+  document.getElementById("bbb").disabled = false;
+}
+}
+function leave2(){
+if($('#tz').val().length==9&&$('#fname').val()&&$('#lname').val()){
+  document.getElementById("bt").disabled = false;
+  
+}
+
+} 
+function l3(){
+  if($('#del').val().length==9){
+  document.getElementById("ff").disabled = false;
+  
+}
+
+}
+function l4(){
+  if($('#up').val().length==9&&$('#fname1').val()&&$('#lname1').val()){
+  document.getElementById("dd").disabled = false;
+  
+}}
+  function addEmp(){
+  var tz=$('#tz').val();
+  var fname=$('#fname').val();
+  var lname=$('#lname').val();
+  var address=$('#address').val();
+  var phone=$('#phone').val();
+  var mail=$('#mail').val();
+  var isActive=true;
+   $.post("http://localhost:3000/employee/addemployee",
+   {
+      tz:tz,
+      fname:fname,
+      lname:lname,
+      address:address,
+      phone:phone,
+      mail:mail,
+      isActive:isActive
+   },
+   function(data, status){
+     alert("Data: " + data + "\nStatus: " + status);
+   });
+  }
+
+// קבלת כל העובדים
+function getallEmployees(){
+$.get("http://localhost:3000/employee/getAllEmployees", function(data, status){
+  document.getElementById('all').innerHTML=JSON.stringify(data);
+  });
+}
+
+
+//קבלת עובד יחיד
+function getOneEmp(){
+  var t =document.getElementById('one').value;
+$.get("http://localhost:3000/employee/getoneEmp/t="+t, function(data, status){
+  document.getElementById('o').innerHTML=JSON.stringify(data);
+});
+}
+
+
+
+//מחיקת עובד
+function delEmp(){
+var t =document.getElementById('del').value;
+$.get("http://localhost:3000/employee/delEmp/t="+t, function(data, status){
+});
+}
+
+//עדכון פרטי עובד
+function updateEmp(){
+var t =document.getElementById('up').value;
+  var fname=$('#fname1').val();
+  var lname=$('#lname1').val();
+  var address=$('#address1').val();
+  var phone=$('#phone1').val();
+  var mail=$('#mail1').val();
+  var isActive=true;
+   $.post("http://localhost:3000/employee/updateEmp/t="+t,
+   {
+      fname:fname,
+      lname:lname,
+      address:address,
+      phone:phone,
+      mail:mail,
+      isActive:isActive
+   },
+   function(data, status){
+     alert("Data: " + data + "\nStatus: " + status);
+   });
+}
+  </script>
+</html>
