@@ -4,4 +4,4 @@
 nodeJs-final-project-with-mongoDb
 
 
-Final project in NODE JS. With MONGODB. The project manages employee attendance hours.
+ Project in NODE JS. With MONGODB. The project manages employee attendance hours.
